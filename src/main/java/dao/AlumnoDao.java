@@ -33,8 +33,17 @@ public class AlumnoDao {
         return alumnosCollection.find(filtro).first();
     }
 
-    public void deleteAlumnosByRating(double rating){
-        filtro = Filters.gte("rating", rating);
+    public List<Alumno> findAlumnoByCalification(double gt){
+        List<Alumno> listaAlumnos = new ArrayList<>();
+        filtro = Filters.gt("rating", gt);
+        for (Alumno a:alumnosCollection.find(filtro)){
+            listaAlumnos.add(a);
+        }
+        return listaAlumnos;
+    }
+
+    public void deleteAlumnosCalification(String criterio, double valor){
+        filtro = Filters.gte(criterio, valor);
         alumnosCollection.deleteMany(filtro);
     }
 }

@@ -23,7 +23,12 @@ public class MenuController {
     }
 
     public boolean ejecutarOpciones(boolean salir, Scanner scanner) {
-        int opcion = Integer.parseInt(scanner.nextLine());
+        int opcion = 0;
+        try {
+            opcion = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Introduce numero");
+        }
         switch (opcion) {
             case 1 -> profesorController.insertarProfesor();
 
@@ -46,7 +51,7 @@ public class MenuController {
             case 9 -> alumnoController.bajaPorNota();
 
             case 10 -> salir = true;
-
+            default -> System.out.println("Opción no válida");
         }
         return salir;
     }

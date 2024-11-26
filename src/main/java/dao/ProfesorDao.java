@@ -31,6 +31,11 @@ public class ProfesorDao {
         return listaProfesores;
     }
 
+    public Profesor findProfesorByEmail(String email){
+        filtro = Filters.eq("email", email);
+        return profesoresCollection.find(filtro).first();
+    }
+
     public List<Profesor> getProfesores() {
         List<Profesor> listaProfesores = new ArrayList<>();
         try (MongoCursor<Profesor> cursor = profesoresCollection.find(Profesor.class).cursor()) {

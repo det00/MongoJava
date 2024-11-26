@@ -2,6 +2,7 @@ package controller;
 
 import dao.ProfesorDao;
 import model.Profesor;
+import utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -9,13 +10,14 @@ import java.util.Scanner;
 public class ProfesorController {
     ProfesorDao profesorDao = new ProfesorDao();
     Scanner scanner = new Scanner(System.in);
+    Utils utils = new Utils();
 
     public void insertarProfesor() {
         Profesor p = new Profesor();
         System.out.println("Nombre: ");
         p.setName(scanner.nextLine());
         System.out.println("Edad: ");
-        p.setAge(Integer.parseInt(scanner.nextLine()));
+        p.setAge((int) utils.validarNumero());
         System.out.println("Género: ");
         p.setGender(scanner.nextLine());
         System.out.println("Email: ");
@@ -35,7 +37,7 @@ public class ProfesorController {
         }
         p.setSubjects(listaAsignaturas);
         System.out.println("Puntuacion: ");
-        p.setRating(Double.parseDouble(scanner.nextLine()));
+        p.setRating(utils.validarNumero());
         profesorDao.insertProfesor(p);
     }
 
@@ -48,24 +50,39 @@ public class ProfesorController {
         } else {
             System.out.println("No hay profesores");
         }
+        System.out.println("--------------------------------------------");
     }
 
     public void buscarRangoEdad() {
-        System.out.println("Mayor que: ");
-        int gt = Integer.parseInt(scanner.nextLine());
-        System.out.println("Menor que: ");
-        int lt = Integer.parseInt(scanner.nextLine());
-        for (Profesor p : profesorDao.findProfesorByAge(gt, lt)) {
-            System.out.println(p);
+        try {
+            System.out.println("Mayor que: ");
+            int gt = (int) utils.validarNumero();
+            System.out.println("Menor que: ");
+            int lt = (int) utils.validarNumero();
+            if (!profesorDao.findProfesorByAge(gt, lt).isEmpty()) {
+                for (Profesor p : profesorDao.findProfesorByAge(gt, lt)) {
+                    System.out.println(p);
+                }
+            } else {
+                System.out.println("No hay profesores entre " + gt + " y " + lt + " años");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Introduce numeros");
         }
     }
 
     public void editarCalificacion() {
         System.out.println("Email a buscar: ");
         String email = scanner.nextLine();
-        System.out.println("Nueva calificación");
-        double calification = Double.parseDouble(scanner.nextLine());
-        profesorDao.updateProfesorByMail(email, calification);
+        if (profesorDao.findProfesorByEmail(email)!=null){
+            System.out.println("Nueva calificación");
+            double calification = utils.validarNumero();
+            profesorDao.updateProfesorByMail(email, calification);
+            System.out.println(profesorDao.findProfesorByEmail(email));
+        }
+        else {
+            System.out.println("No se ha encontrado ningun profesor con el correo " + email);
+        }
     }
 }
 
